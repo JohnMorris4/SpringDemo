@@ -3,7 +3,7 @@ package com.morrisje;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
  * Created by jmorris on 7/28/18
@@ -12,15 +12,15 @@ public class Main {
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
 
-    private static final String CONFIG_LOCATION = "beans.xml";
+
 
     public static void main(String[] args) {
         log.info("Guess the number game");
 
 //        Create the context
-        ConfigurableApplicationContext context = new ClassPathXmlApplicationContext(CONFIG_LOCATION);
+        ConfigurableApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
 
-        NumberGenerator numberGenerator = context.getBean("numberGenerator", NumberGenerator.class);
+        NumberGenerator numberGenerator = context.getBean(NumberGenerator.class);
 
 //        Call method next()
         int number = numberGenerator.next();
@@ -29,11 +29,10 @@ public class Main {
         log.info("number = {}", number);
 
         //get game bean
-        Game game = context.getBean(Game.class);
+        MessageGenerator messageGenerator = context.getBean(MessageGenerator.class);
 
-//        // Call reset method
-//        game.reset();
-
+        log.info("getMainMessage >>> {}", messageGenerator.getMainMessage());
+        log.info("getResultMessage >>> {}", messageGenerator.getResultMessage());
 //        Close context
         context.close();
 

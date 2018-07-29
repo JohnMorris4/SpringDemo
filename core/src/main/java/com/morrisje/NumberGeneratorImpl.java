@@ -5,6 +5,7 @@ import java.util.Random;
 /**
  * Created by jmorris on 7/28/18
  */
+
 public class NumberGeneratorImpl implements NumberGenerator {
 
     // == Fields ==
