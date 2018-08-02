@@ -1,94 +1,56 @@
 package com.morrisje;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-
-/**
- * Created by jmorris on 7/29/18
- */
-
+@Slf4j
+@Getter
+@Component
 public class GameImpl implements Game{
 
-
-//    == Constants ==
-    private static final Logger log = LoggerFactory.getLogger(GameImpl.class);
-
 //    == fields ==
-    @Autowired
-    private NumberGenerator numberGenerator;
-    private int guessCount = 10;
+    @Getter(AccessLevel.NONE)
+    private final NumberGenerator numberGenerator;
+
+    private final int guessCount;
     private int number;
-    private int guess;
+
     private int smallest;
     private int biggest;
     private int remainingGuesses;
     private boolean validNumberRange = true;
-
-    //== Constructors ==
-//    public GameImpl(NumberGenerator numberGenerator) {
-//        this.numberGenerator = numberGenerator;
-//    }
+// == LomBok Setters
+    @Setter
+    private int guess;
 
     // == init methods ==
     @PostConstruct
     @Override
     public void reset() {
-        smallest = 0;
-        guess = 0;
+        smallest = numberGenerator.getMinNumber();
+        guess = numberGenerator.getMinNumber();
         remainingGuesses = guessCount;
         biggest = numberGenerator.getMaxNumber();
         number = numberGenerator.next();
         log.debug("The number is {}", number);
     }
 
+    @Autowired
+    public GameImpl(NumberGenerator numberGenerator, @GuessCount int guessCount) {
+        this.numberGenerator = numberGenerator;
+        this.guessCount = guessCount;
+    }
+
     @PreDestroy
     public void preDestroy(){
         log.info("PreDestroy in GAME");
     }
-
-    // == Public methods ==
-
-//    public void setNumberGenerator(NumberGenerator numberGenerator){
-//        this.numberGenerator = numberGenerator;
-//
-//    }
-
-
-
-    @Override
-    public int getNumber() {
-        return number;
-    }
-
-    @Override
-    public int getGuess() {
-        return guess;
-    }
-
-    @Override
-    public void setGuess(int guess) {
-        this.guess = guess;
-    }
-
-    @Override
-    public int getSmallest() {
-        return smallest;
-    }
-
-    @Override
-    public int getBiggest() {
-        return biggest;
-    }
-
-    @Override
-    public int getRemainingGuesses() {
-        return remainingGuesses;
-    }
-
 
     @Override
     public void check() {
@@ -103,11 +65,6 @@ public class GameImpl implements Game{
             }
         }
         remainingGuesses--;
-    }
-
-    @Override
-    public boolean isValidNumberRange() {
-        return validNumberRange;
     }
 
     @Override
